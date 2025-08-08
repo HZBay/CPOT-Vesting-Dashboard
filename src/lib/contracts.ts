@@ -2,12 +2,12 @@ export const contractConfig = {
   mainnet: {
     vestingAddress: "0x...",
     tokenAddress: "0x...",
-    chainId: 1
+    chainId: 177
   },
   testnet: {
-    vestingAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Local anvil node
-    tokenAddress: "0x...",
-    chainId: 31337
+    vestingAddress: "0x84Be95c1A2Bef81F41f3c563F0E79D5C1f6B46e7",
+    tokenAddress: "0xAC3879CB86d1B815B1519c4805A21070649493Af",
+    chainId: 133
   }
 } as const;
 

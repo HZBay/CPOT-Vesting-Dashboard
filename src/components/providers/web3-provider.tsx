@@ -6,14 +6,26 @@ import {
   getDefaultConfig,
   darkTheme,
 } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import { mainnet, sepolia, hardhat } from 'wagmi/chains';
+import { WagmiProvider, type Chain } from 'wagmi';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
+const hashkeyTestnet: Chain = {
+  id: 133,
+  name: 'HashKey Chain Testnet',
+  nativeCurrency: { name: 'HSK', symbol: 'HSK', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://testnet.hsk.xyz'] },
+  },
+  blockExplorers: {
+    default: { name: 'HashKey Explorer', url: 'https://testnet-explorer.hsk.xyz' },
+  },
+  testnet: true,
+};
 
 const config = getDefaultConfig({
   appName: 'HZ Vesting Dashboard',
   projectId: 'YOUR_PROJECT_ID', // Replace with your WalletConnect Project ID
-  chains: [mainnet, sepolia, hardhat],
+  chains: [hashkeyTestnet],
   ssr: true,
 });
 
