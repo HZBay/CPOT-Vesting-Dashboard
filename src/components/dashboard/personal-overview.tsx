@@ -37,10 +37,10 @@ export default function PersonalOverview({ summary }: { summary: BeneficiarySumm
             <h2 className="text-2xl font-bold tracking-tight">{t('title')}</h2>
         </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <StatCard title={t('totalAllocated')} value={formatTokenAmount(summary?.totalAmount, 2)} unit="CPOT" icon={PiggyBank} />
-        <StatCard title={t('alreadyReleased')} value={formatTokenAmount(summary?.releasedAmount, 2)} unit="CPOT" icon={HandCoins} />
-        <StatCard title={t('currentlyReleasable')} value={formatTokenAmount(summary?.releasableAmount, 2)} unit="CPOT" icon={KeyRound} />
-        <StatCard title={t('stillLocked')} value={formatTokenAmount(summary?.lockedAmount, 2)} unit="CPOT" icon={Lock} />
+        <StatCard title={t('totalAllocated')} value={formatTokenAmount(summary?.totalAmount, 1)} unit="CPOT" icon={PiggyBank} />
+        <StatCard title={t('alreadyReleased')} value={formatTokenAmount(summary?.releasedAmount, 1)} unit="CPOT" icon={HandCoins} />
+        <StatCard title={t('currentlyReleasable')} value={formatTokenAmount(summary?.releasableAmount, 1)} unit="CPOT" icon={KeyRound} />
+        <StatCard title={t('stillLocked')} value={formatTokenAmount(summary?.lockedAmount, 1)} unit="CPOT" icon={Lock} />
         <StatCard title={t('vestingSchedules')} value={summary?.scheduleCount?.toString() ?? '0'} icon={List} />
       </div>
     </div>

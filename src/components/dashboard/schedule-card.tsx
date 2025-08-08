@@ -165,12 +165,12 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             <div className="text-sm">
                 <div className="flex justify-between">
                     <span>{t('releaseProgress')}</span>
-                    <span>{releaseProgressPercent.toFixed(2)}%</span>
+                    <span>{releaseProgressPercent.toFixed(1)}%</span>
                 </div>
                 <Progress value={releaseProgressPercent} className="mt-1 h-2" />
                 <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                    <span>{formatTokenAmount(vestingProgress?.releasedAmount, 2)}</span>
-                    <span>{formatTokenAmount(vestingProgress?.totalAmount, 2)} CPOT</span>
+                    <span>{formatTokenAmount(vestingProgress?.releasedAmount, 1)}</span>
+                    <span>{formatTokenAmount(vestingProgress?.totalAmount, 1)} CPOT</span>
                 </div>
             </div>
             
@@ -193,10 +193,10 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 <div className="flex items-center col-span-2 text-muted-foreground"><Calendar className="w-4 h-4 mr-2"/>{t('cliffEnds')}: {new Date(Number(schedule.start + schedule.cliff) * 1000).toLocaleString()}</div>
-                {renderStat(PiggyBank, t('total'), formatTokenAmount(vestingProgress?.totalAmount, 2), "CPOT", isLoadingProgress)}
-                {renderStat(HandCoins, t('released'), formatTokenAmount(vestingProgress?.releasedAmount, 2), "CPOT", isLoadingProgress)}
-                {renderStat(KeyRound, t('releasable'), formatTokenAmount(vestingProgress?.releasableAmount, 4), "CPOT", isLoadingProgress)}
-                {renderStat(Lock, t('locked'), formatTokenAmount(vestingProgress?.lockedAmount, 2), "CPOT", isLoadingProgress)}
+                {renderStat(PiggyBank, t('total'), formatTokenAmount(vestingProgress?.totalAmount, 1), "CPOT", isLoadingProgress)}
+                {renderStat(HandCoins, t('released'), formatTokenAmount(vestingProgress?.releasedAmount, 1), "CPOT", isLoadingProgress)}
+                {renderStat(KeyRound, t('releasable'), formatTokenAmount(vestingProgress?.releasableAmount, 1), "CPOT", isLoadingProgress)}
+                {renderStat(Lock, t('locked'), formatTokenAmount(vestingProgress?.lockedAmount, 1), "CPOT", isLoadingProgress)}
             </div>
         </CardContent>
         <CardFooter className="bg-muted/50 p-4 flex flex-col sm:flex-row items-center gap-2">
