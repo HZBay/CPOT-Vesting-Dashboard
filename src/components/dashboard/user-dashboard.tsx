@@ -24,6 +24,7 @@ export default function UserDashboard() {
   });
 
   // 2. Create a dynamic list of contract calls to get each schedule's details
+  // Ensure this only runs when scheduleIds is available and not empty.
   const scheduleContracts = (scheduleIds ?? []).map(id => ({
       address: contractConfig.testnet.vestingAddress,
       abi: vestingContractAbi,
@@ -62,7 +63,7 @@ export default function UserDashboard() {
     })
     .filter((s): s is VestingScheduleWithId => s !== null);
 
-  const isLoading = isLoadingIds || isLoadingSchedules || isLoadingSummary;
+  const isLoading = isLoadingIds || (!!scheduleIds && scheduleIds.length > 0 && isLoadingSchedules) || isLoadingSummary;
 
   if (!isConnected) {
     return (
@@ -96,14 +97,14 @@ export default function UserDashboard() {
     )
   }
   
-  if (!summaryResult && !isLoading) {
+  if ((!scheduleIds || scheduleIds.length === 0) && !isLoading) {
     return (
-      <Card className="mt-6">
-        <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-            <h3 className="text-xl font-semibold">No Data</h3>
-            <p className="text-muted-foreground mt-2">Could not find any vesting information for this address.</p>
-        </CardContent>
-      </Card>
+      <>
+        <PersonalOverview summary={summaryResult} />
+        <div className="mt-8">
+            <VestingPlans schedules={[]} />
+        </div>
+      </>
     )
   }
 
