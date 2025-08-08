@@ -19,7 +19,7 @@ const StatCard = ({ title, value, unit, icon: Icon }: { title: string; value: st
       <Icon className="h-4 w-4 text-muted-foreground" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">
+      <div className="text-xl font-bold">
         <span className="break-all">{value}</span>
         {unit && <span className="text-base font-medium ml-1">{unit}</span>}
       </div>

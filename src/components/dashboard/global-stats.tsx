@@ -17,7 +17,7 @@ const StatCard = ({ title, value, unit, icon: Icon, isLoading }: { title: string
         {isLoading ? (
             <Skeleton className="h-8 w-3/4" />
         ) : (
-          <div className="text-2xl font-bold">
+          <div className="text-xl font-bold">
             <span className="break-all">{value}</span>
             {unit && <span className="text-base font-medium ml-1">{unit}</span>}
           </div>
