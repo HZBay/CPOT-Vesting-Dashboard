@@ -39,9 +39,16 @@ export interface VestingSchedule {
   vestingType: VestingType;
 }
 
-export interface VestingScheduleWithId extends VestingSchedule {
+export interface VestingScheduleWithId {
+  id: `0x${string}`;
+  schedule: VestingSchedule;
+}
+
+// This is the type that is passed to the ScheduleCard component.
+export interface VestingScheduleWithIdAndDetails extends VestingSchedule {
   id: `0x${string}`;
 }
+
 
 export interface VestingProgress {
   totalAmount: bigint;

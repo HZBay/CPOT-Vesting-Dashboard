@@ -16,7 +16,7 @@ const categories = [
 export default function VestingPlans({ schedules }: { schedules: VestingScheduleWithId[] }) {
 
   const filteredSchedules = (category: AllocationCategory) => {
-    return schedules.filter(s => s.category === category);
+    return schedules.filter(s => s.schedule.category === category);
   }
 
   if (schedules.length === 0) {
@@ -43,14 +43,14 @@ export default function VestingPlans({ schedules }: { schedules: VestingSchedule
         </TabsList>
         <TabsContent value="all" className="mt-4">
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-            {schedules.map((schedule) => <ScheduleCard key={schedule.id} schedule={schedule} />)}
+            {schedules.map((schedule) => <ScheduleCard key={schedule.id} schedule={{...schedule.schedule, id: schedule.id}} />)}
           </div>
         </TabsContent>
         {categories.map(cat => (
           <TabsContent key={cat} value={cat.toString()} className="mt-4">
              {filteredSchedules(cat).length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-                    {filteredSchedules(cat).map((schedule) => <ScheduleCard key={schedule.id} schedule={schedule} />)}
+                    {filteredSchedules(cat).map((schedule) => <ScheduleCard key={schedule.id} schedule={{...schedule.schedule, id: schedule.id}} />)}
                 </div>
              ) : (
                 <div className="text-center p-10 bg-card rounded-lg border border-dashed">

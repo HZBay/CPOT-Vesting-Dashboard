@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { VestingScheduleWithId, VestingProgress } from '@/lib/types';
+import type { VestingScheduleWithIdAndDetails, VestingProgress } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -18,7 +18,7 @@ import { parseEther } from 'viem';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Skeleton } from '../ui/skeleton';
 
-export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWithId }) {
+export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWithIdAndDetails }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [releaseAmount, setReleaseAmount] = useState('');
