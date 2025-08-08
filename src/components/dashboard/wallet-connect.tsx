@@ -44,11 +44,12 @@ export default function WalletConnect() {
         }
 
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button
               onClick={openChainModal}
               type="button"
               variant="outline"
+              className="h-9"
             >
               {chain.hasIcon && (
                 <div
@@ -76,7 +77,7 @@ export default function WalletConnect() {
               <span className="hidden sm:inline">{chain.name}</span>
             </Button>
 
-            <Button onClick={openAccountModal} type="button">
+            <Button onClick={openAccountModal} type="button" className="h-9">
               {account.displayName}
             </Button>
           </div>
