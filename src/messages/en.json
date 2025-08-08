@@ -1,10 +1,10 @@
 {
   "Metadata": {
-    "title": "HZ Vesting Dashboard",
-    "description": "Manage your HZ token vesting schedules."
+    "title": "CPOT Vesting Dashboard",
+    "description": "Manage your CPOT token vesting schedules."
   },
   "Header": {
-    "title": "HZ Vesting Dashboard"
+    "title": "CPOT Vesting Dashboard"
   },
   "GlobalStats": {
     "title": "Overall Stats",

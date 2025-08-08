@@ -17,11 +17,17 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const onSelectChange = (value: string) => {
-    // router.replace(pathname, { locale: value }); // This is for older next-intl
-    // For App Router, we construct the new path manually
-    const newPath = `/${value}${pathname}`;
-    router.replace(newPath);
+  const onSelectChange = (newLocale: string) => {
+    // The pathname returned by `usePathname` includes the current locale.
+    // We need to remove the current locale from the beginning of the path.
+    const newPath = pathname.startsWith(`/${locale}`) 
+      ? pathname.substring(locale.length + 1)
+      : pathname;
+    
+    // The root path might become empty, so we ensure it's at least `/`.
+    const finalPath = newPath || '/';
+    
+    router.replace(`/${newLocale}${finalPath}`);
   };
 
   return (
