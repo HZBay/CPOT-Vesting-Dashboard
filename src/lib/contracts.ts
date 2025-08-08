@@ -20,6 +20,106 @@ export const vestingContractAbi = [
         "type": "address"
       }
     ],
+    "name": "getBeneficiaryVestingScheduleIds",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "scheduleId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getVestingSchedule",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "initialized",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cliff",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "slicePeriodSeconds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revocable",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountTotal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "released",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revoked",
+            "type": "bool"
+          },
+          {
+            "internalType": "enum IVesting.AllocationCategory",
+            "name": "category",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IVesting.VestingType",
+            "name": "vestingType",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IVesting.VestingSchedule",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      }
+    ],
     "name": "getBeneficiaryVestingSchedules",
     "outputs": [
       {

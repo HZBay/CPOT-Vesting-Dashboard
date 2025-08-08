@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { AllocationCategoryMapping, VestingTypeMapping } from '@/lib/types';
 import { formatTokenAmount, formatDuration } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Clock, HandCoins, Info, HelpCircle } from 'lucide-react';
-import { useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
+import { Calendar, Clock, HandCoins } from 'lucide-react';
+import { useWriteContract, useWaitForTransactionReceipt, useReadContract, useQueryClient } from 'wagmi';
 import { contractConfig, vestingContractAbi } from '@/lib/contracts';
 import { useToast } from '@/hooks/use-toast';
 import { parseEther } from 'viem';
@@ -19,6 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/
 
 export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWithId }) {
     const { toast } = useToast();
+    const queryClient = useQueryClient();
     const [releaseAmount, setReleaseAmount] = useState('');
     const [now, setNow] = useState(new Date());
 
@@ -31,37 +32,63 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         address: contractConfig.testnet.vestingAddress,
         abi: vestingContractAbi,
         functionName: 'computeReleasableAmount',
-        args: [schedule.id as `0x${string}`], // This will fail as schedule.id is not a valid bytes32
+        args: [schedule.id as `0x${string}`],
         query: {
-            enabled: false, // Disabled due to invalid ID
             // Refetch every 30 seconds
             refetchInterval: 30000,
         },
     });
-    
-    // As computeReleasableAmount is disabled, we will use client-side calculation for UI display.
-    const clientSideReleasable = useMemo(() => {
-        if (schedule.revoked) return 0n;
-        const currentTime = BigInt(Math.floor(now.getTime() / 1000));
-        if (currentTime < schedule.start + schedule.cliff) return 0n;
-        if (currentTime >= schedule.start + schedule.duration) return schedule.amountTotal - schedule.released;
-        
-        const timeElapsed = currentTime - schedule.start;
-        const vestedAmount = (schedule.amountTotal * timeElapsed) / schedule.duration;
-        const releasable = vestedAmount - schedule.released;
-        
-        return releasable > 0n ? releasable : 0n;
-    }, [schedule, now]);
 
-    const releasableBigInt = computedReleasable ?? clientSideReleasable;
+    const releasableBigInt = computedReleasable ?? 0n;
+    const releasableFormatted = formatTokenAmount(releasableBigInt, 18);
 
-    const { data: hash, isPending, writeContract } = useWriteContract();
-    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
+    const { data: hash, isPending, writeContract } = useWriteContract({
+        mutation: {
+            onSuccess: () => {
+                toast({ title: "Transaction Sent", description: "Your release transaction has been broadcasted." });
+            },
+            onError: (error) => {
+                toast({ title: "Transaction Failed", description: error.message, variant: 'destructive' });
+            }
+        }
+    });
+
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ 
+        hash,
+        onSuccess(data) {
+            toast({ title: "Transaction Confirmed", description: "Your tokens have been released successfully." });
+            setReleaseAmount('');
+            // Invalidate queries to refetch data
+            queryClient.invalidateQueries();
+        },
+    });
 
     const handleRelease = () => {
-        // This function is currently not callable due to missing valid scheduleId
-        toast({ title: 'Error', description: 'Cannot perform release action. Schedule ID is not available from the contract.', variant: 'destructive' });
+        const amountToRelease = releaseAmount.trim() === '' ? releasableBigInt : parseEther(releaseAmount);
+
+        if (amountToRelease <= 0n) {
+            toast({ title: 'Invalid Amount', description: 'Please enter a positive amount to release.', variant: 'destructive' });
+            return;
+        }
+
+        if (amountToRelease > releasableBigInt) {
+            toast({ title: 'Amount Exceeds Releasable', description: 'You cannot release more tokens than currently available.', variant: 'destructive' });
+            return;
+        }
+
+        writeContract({
+            address: contractConfig.testnet.vestingAddress,
+            abi: vestingContractAbi,
+            functionName: 'release',
+            args: [schedule.id as `0x${string}`, amountToRelease]
+        });
     };
+    
+    useEffect(() => {
+      if (isConfirmed) {
+        // Reset or refetch data after confirmation
+      }
+    }, [isConfirmed]);
 
     const status = useMemo(() => {
         if (schedule.revoked) return { text: 'Revoked', color: 'bg-red-500' };
@@ -69,7 +96,7 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         return { text: 'Active', color: 'bg-green-500' };
     }, [schedule]);
 
-    const releaseProgress = Number((schedule.released * 10000n) / schedule.amountTotal) / 100;
+    const releaseProgress = schedule.amountTotal > 0n ? Number((schedule.released * 10000n) / schedule.amountTotal) / 100 : 100;
 
     const timeProgress = useMemo(() => {
         if (schedule.duration === 0n) return 100;
@@ -85,6 +112,7 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         return endTime > nowSeconds ? endTime - nowSeconds : 0;
     }, [schedule, now]);
 
+    const canRelease = releasableBigInt > 0n && !isPending && !isConfirming;
 
     return (
     <Card className="flex flex-col">
@@ -140,13 +168,25 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             </div>
         </CardContent>
         <CardFooter className="bg-muted/50 p-4 flex flex-col sm:flex-row items-center gap-2">
-            <Input 
-                placeholder="Amount to release" 
-                className="bg-background"
-                value={releaseAmount}
-                onChange={(e) => setReleaseAmount(e.target.value)}
-                disabled={releasableBigInt === 0n || true} // Also disabled due to ID issue
-            />
+             <div className="w-full relative">
+                <Input 
+                    placeholder={`Max: ${releasableFormatted}`} 
+                    className="bg-background pr-20"
+                    value={releaseAmount}
+                    onChange={(e) => setReleaseAmount(e.target.value)}
+                    disabled={!canRelease}
+                    type="number"
+                />
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8"
+                    onClick={() => setReleaseAmount(releasableFormatted)}
+                    disabled={!canRelease}
+                >
+                    Max
+                </Button>
+            </div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -154,16 +194,17 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
                         <Button 
                             className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                             onClick={handleRelease}
-                            disabled={true} // Disabled because scheduleId is not available
+                            disabled={!canRelease}
                         >
-                            <HandCoins className="mr-2 h-4 w-4" />
-                            Release Tokens
+                            {(isPending || isConfirming) ? 'Releasing...' : 'Release Tokens'}
                         </Button>
                     </span>
                 </TooltipTrigger>
-                <TooltipContent>
-                  <p>Release action is disabled because a unique schedule ID is not available from the contract.</p>
-                </TooltipContent>
+                {!canRelease && releasableBigInt === 0n && (
+                  <TooltipContent>
+                    <p>No tokens are currently releasable for this schedule.</p>
+                  </TooltipContent>
+                )}
               </Tooltip>
             </TooltipProvider>
         </CardFooter>
