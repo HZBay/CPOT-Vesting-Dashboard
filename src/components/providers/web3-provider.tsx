@@ -24,7 +24,7 @@ const hashkeyTestnet: Chain = {
 
 const config = getDefaultConfig({
   appName: 'HZ Vesting Dashboard',
-  projectId: 'YOUR_PROJECT_ID', // Replace with your WalletConnect Project ID
+  projectId: 'c9535761828f09004f141133379058b2', // Replace with your WalletConnect Project ID
   chains: [hashkeyTestnet],
   ssr: true,
 });
