@@ -66,6 +66,7 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             // Invalidate queries to refetch data
             queryClient.invalidateQueries({ queryKey: ['getVestingProgress'] });
             queryClient.invalidateQueries({ queryKey: ['getBeneficiaryVestingSummary'] });
+            queryClient.invalidateQueries({ queryKey: ['getBeneficiaryVestingSchedules'] });
         },
     });
 

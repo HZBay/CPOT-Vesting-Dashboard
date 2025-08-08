@@ -1,45 +1,29 @@
 'use client';
 
-import { useAccount, useReadContracts, useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import PersonalOverview from './personal-overview';
 import VestingPlans from './vesting-plans';
 import { Card, CardContent } from '@/components/ui/card';
 import { Wallet } from 'lucide-react';
 import { contractConfig, vestingContractAbi } from '@/lib/contracts';
-import type { VestingSchedule, VestingScheduleWithId } from '@/lib/types';
+import type { VestingScheduleWithId } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 
 export default function UserDashboard() {
   const { address, isConnected } = useAccount();
 
-  // 1. Get the list of schedule IDs for the beneficiary
-  const { data: scheduleIds, isLoading: isLoadingIds } = useReadContract({
+  // 1. Get all schedules for the beneficiary
+  const { data: schedulesResult, isLoading: isLoadingSchedules } = useReadContract({
     address: contractConfig.testnet.vestingAddress,
     abi: vestingContractAbi,
-    functionName: 'getBeneficiaryVestingScheduleIds',
+    functionName: 'getBeneficiaryVestingSchedules',
     args: [address!],
     query: {
         enabled: isConnected && !!address,
     }
   });
 
-  // 2. Create a dynamic list of contract calls to get each schedule's details
-  // Ensure this only runs when scheduleIds is available and not empty.
-  const scheduleContracts = (scheduleIds ?? []).map(id => ({
-      address: contractConfig.testnet.vestingAddress,
-      abi: vestingContractAbi,
-      functionName: 'getVestingSchedule',
-      args: [id],
-  }));
-
-  const { data: schedulesResult, isLoading: isLoadingSchedules } = useReadContracts({
-      contracts: scheduleContracts,
-      query: {
-          enabled: !!scheduleIds && scheduleIds.length > 0,
-      }
-  });
-
-  // 3. Get the beneficiary summary
+  // 2. Get the beneficiary summary
   const { data: summaryResult, isLoading: isLoadingSummary, error } = useReadContract({
     address: contractConfig.testnet.vestingAddress,
     abi: vestingContractAbi,
@@ -50,20 +34,15 @@ export default function UserDashboard() {
     }
   });
   
-  // 4. Combine schedule data with their IDs
+  // 3. Process the schedules data
   const schedules: VestingScheduleWithId[] = (schedulesResult ?? [])
-    .map((result, index) => {
-        if (result.status === 'success' && scheduleIds) {
-            return {
-                ...(result.result as VestingSchedule),
-                id: scheduleIds[index],
-            };
-        }
-        return null;
-    })
+    .map((result: any) => ({
+      id: result.id,
+      ...result.schedule
+    }))
     .filter((s): s is VestingScheduleWithId => s !== null);
 
-  const isLoading = isLoadingIds || (!!scheduleIds && scheduleIds.length > 0 && isLoadingSchedules) || isLoadingSummary;
+  const isLoading = isLoadingSchedules || isLoadingSummary;
 
   if (!isConnected) {
     return (
@@ -97,7 +76,7 @@ export default function UserDashboard() {
     )
   }
   
-  if ((!scheduleIds || scheduleIds.length === 0) && !isLoading) {
+  if (schedules.length === 0 && !isLoading) {
     return (
       <>
         <PersonalOverview summary={summaryResult} />
