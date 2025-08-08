@@ -24,7 +24,9 @@ const hashkeyTestnet: Chain = {
 
 const config = getDefaultConfig({
   appName: 'CPOT Vesting Dashboard',
-  projectId: 'c9535761828f09004f141133379058b2', // Replace with your WalletConnect Project ID
+  // IMPORTANT: Replace "YOUR_PROJECT_ID" with your actual WalletConnect Project ID
+  // and add your app's domain to the allowlist at https://cloud.walletconnect.com/
+  projectId: 'c9535761828f09004f141133379058b2', 
   chains: [hashkeyTestnet],
   ssr: true,
 });
