@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Wallet } from 'lucide-react';
 import { contractConfig, vestingContractAbi } from '@/lib/contracts';
 import { useMemo } from 'react';
-import type { VestingSchedule } from '@/lib/types';
+import type { VestingSchedule, VestingScheduleWithId } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 
 export default function UserDashboard() {
@@ -35,11 +35,11 @@ export default function UserDashboard() {
 
   const [summary, schedulesRaw] = data || [null, null];
 
-  const schedules: VestingSchedule[] = useMemo(() => {
+  const schedules: VestingScheduleWithId[] = useMemo(() => {
     if (!schedulesRaw?.result) return [];
     // The contract doesn't return a unique ID, so we create a pseudo-ID for UI purposes.
     // NOTE: This ID cannot be used for contract interactions.
-    return schedulesRaw.result.map((schedule, index) => ({
+    return (schedulesRaw.result as VestingSchedule[]).map((schedule, index) => ({
       ...schedule,
       id: `${address}-${index}`,
     }));

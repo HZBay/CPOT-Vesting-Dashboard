@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AllocationCategory, AllocationCategoryMapping } from '@/lib/types';
 import ScheduleCard from './schedule-card';
-import type { VestingSchedule } from '@/lib/types';
+import type { VestingScheduleWithId } from '@/lib/types';
 import { Package, FileText } from 'lucide-react';
 
 const categories = [
@@ -13,7 +13,7 @@ const categories = [
     AllocationCategory.CORNERSTONE
 ];
 
-export default function VestingPlans({ schedules }: { schedules: VestingSchedule[] }) {
+export default function VestingPlans({ schedules }: { schedules: VestingScheduleWithId[] }) {
 
   const filteredSchedules = (category: AllocationCategory) => {
     return schedules.filter(s => s.category === category);

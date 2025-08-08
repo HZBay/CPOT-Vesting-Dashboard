@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { VestingSchedule } from '@/lib/types';
+import type { VestingScheduleWithId } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { parseEther } from 'viem';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
-export default function ScheduleCard({ schedule }: { schedule: VestingSchedule }) {
+export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWithId }) {
     const { toast } = useToast();
     const [releaseAmount, setReleaseAmount] = useState('');
     const [now, setNow] = useState(new Date());

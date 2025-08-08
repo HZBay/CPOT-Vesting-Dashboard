@@ -37,6 +37,8 @@ export interface VestingSchedule {
   revoked: boolean;
   category: AllocationCategory;
   vestingType: VestingType;
-  // This is not part of the contract return, but we add it for UI purposes
+}
+
+export interface VestingScheduleWithId extends VestingSchedule {
   id: string; 
 }
