@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { VestingScheduleWithId } from '@/lib/types';
+import type { VestingScheduleWithId, VestingProgress } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -10,12 +10,13 @@ import { Input } from '@/components/ui/input';
 import { AllocationCategoryMapping, VestingTypeMapping } from '@/lib/types';
 import { formatTokenAmount, formatDuration } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Clock, HandCoins } from 'lucide-react';
+import { Calendar, Clock, HandCoins, KeyRound, Lock, PiggyBank } from 'lucide-react';
 import { useWriteContract, useWaitForTransactionReceipt, useReadContract, useQueryClient } from 'wagmi';
 import { contractConfig, vestingContractAbi } from '@/lib/contracts';
 import { useToast } from '@/hooks/use-toast';
 import { parseEther } from 'viem';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Skeleton } from '../ui/skeleton';
 
 export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWithId }) {
     const { toast } = useToast();
@@ -28,18 +29,19 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         return () => clearInterval(timer);
     }, []);
 
-    const { data: computedReleasable } = useReadContract({
+    const { data: progress, isLoading: isLoadingProgress } = useReadContract({
         address: contractConfig.testnet.vestingAddress,
         abi: vestingContractAbi,
-        functionName: 'computeReleasableAmount',
-        args: [schedule.id as `0x${string}`],
+        functionName: 'getVestingProgress',
+        args: [schedule.id],
         query: {
-            // Refetch every 30 seconds
-            refetchInterval: 30000,
+            // Refetch every 10 seconds
+            refetchInterval: 10000,
         },
     });
 
-    const releasableBigInt = computedReleasable ?? 0n;
+    const vestingProgress = progress as VestingProgress | undefined;
+    const releasableBigInt = vestingProgress?.releasableAmount ?? 0n;
     const releasableFormatted = formatTokenAmount(releasableBigInt, 18);
 
     const { data: hash, isPending, writeContract } = useWriteContract({
@@ -48,7 +50,10 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
                 toast({ title: "Transaction Sent", description: "Your release transaction has been broadcasted." });
             },
             onError: (error) => {
-                toast({ title: "Transaction Failed", description: error.message, variant: 'destructive' });
+                const message = error.message.includes('User rejected the request') 
+                    ? 'Transaction rejected by user.' 
+                    : error.message;
+                toast({ title: "Transaction Failed", description: message, variant: 'destructive' });
             }
         }
     });
@@ -59,19 +64,21 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             toast({ title: "Transaction Confirmed", description: "Your tokens have been released successfully." });
             setReleaseAmount('');
             // Invalidate queries to refetch data
-            queryClient.invalidateQueries();
+            queryClient.invalidateQueries({ queryKey: ['getVestingProgress'] });
+            queryClient.invalidateQueries({ queryKey: ['getBeneficiaryVestingSummary'] });
         },
     });
 
     const handleRelease = () => {
-        const amountToRelease = releaseAmount.trim() === '' ? releasableBigInt : parseEther(releaseAmount);
+        if (!vestingProgress) return;
+        const amountToRelease = releaseAmount.trim() === '' ? vestingProgress.releasableAmount : parseEther(releaseAmount);
 
         if (amountToRelease <= 0n) {
             toast({ title: 'Invalid Amount', description: 'Please enter a positive amount to release.', variant: 'destructive' });
             return;
         }
 
-        if (amountToRelease > releasableBigInt) {
+        if (amountToRelease > vestingProgress.releasableAmount) {
             toast({ title: 'Amount Exceeds Releasable', description: 'You cannot release more tokens than currently available.', variant: 'destructive' });
             return;
         }
@@ -80,23 +87,20 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             address: contractConfig.testnet.vestingAddress,
             abi: vestingContractAbi,
             functionName: 'release',
-            args: [schedule.id as `0x${string}`, amountToRelease]
+            args: [schedule.id, amountToRelease]
         });
     };
-    
-    useEffect(() => {
-      if (isConfirmed) {
-        // Reset or refetch data after confirmation
-      }
-    }, [isConfirmed]);
 
     const status = useMemo(() => {
         if (schedule.revoked) return { text: 'Revoked', color: 'bg-red-500' };
-        if (schedule.released === schedule.amountTotal) return { text: 'Completed', color: 'bg-gray-500' };
+        if (vestingProgress && vestingProgress.totalAmount > 0n && vestingProgress.releasedAmount === vestingProgress.totalAmount) return { text: 'Completed', color: 'bg-gray-500' };
         return { text: 'Active', color: 'bg-green-500' };
-    }, [schedule]);
+    }, [schedule, vestingProgress]);
 
-    const releaseProgress = schedule.amountTotal > 0n ? Number((schedule.released * 10000n) / schedule.amountTotal) / 100 : 100;
+    const releaseProgressPercent = useMemo(() => {
+        if (!vestingProgress || vestingProgress.totalAmount === 0n) return 0;
+        return Number((vestingProgress.releasedAmount * 10000n) / vestingProgress.totalAmount) / 100;
+    }, [vestingProgress]);
 
     const timeProgress = useMemo(() => {
         if (schedule.duration === 0n) return 100;
@@ -112,14 +116,24 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         return endTime > nowSeconds ? endTime - nowSeconds : 0;
     }, [schedule, now]);
 
-    const canRelease = releasableBigInt > 0n && !isPending && !isConfirming;
+    const canRelease = (vestingProgress?.releasableAmount ?? 0n) > 0n && !isPending && !isConfirming;
+
+    const renderStat = (icon: React.ElementType, title: string, value: string | undefined, unit: string, isLoading: boolean) => (
+        <>
+            <div className="flex items-center text-sm">
+                {React.createElement(icon, { className: "w-4 h-4 mr-2 text-muted-foreground" })}
+                {title}:
+            </div>
+            {isLoading ? <Skeleton className="h-5 w-24" /> : <div className="text-right font-mono text-sm font-semibold">{value ?? '...'} {unit}</div>}
+        </>
+    );
 
     return (
     <Card className="flex flex-col">
         <CardHeader>
             <div className="flex justify-between items-start">
                 <div>
-                    <CardTitle className="flex items-center">
+                    <CardTitle className="flex items-center text-xl">
                         <span className="mr-2">Plan Details</span>
                          <Badge variant="outline">{AllocationCategoryMapping[schedule.category]}</Badge>
                     </CardTitle>
@@ -134,12 +148,13 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
         <CardContent className="flex-grow space-y-4">
             <div className="text-sm">
                 <div className="flex justify-between">
-                    <span>Vested</span>
-                    <span>{formatTokenAmount(schedule.released)} / {formatTokenAmount(schedule.amountTotal)} CPOT</span>
+                    <span>Release Progress</span>
+                    <span>{releaseProgressPercent.toFixed(2)}%</span>
                 </div>
-                <Progress value={releaseProgress} className="mt-1 h-2" />
+                <Progress value={releaseProgressPercent} className="mt-1 h-2" />
                 <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                    <span>{releaseProgress.toFixed(2)}% Released</span>
+                    <span>{formatTokenAmount(vestingProgress?.releasedAmount, 2)}</span>
+                    <span>{formatTokenAmount(vestingProgress?.totalAmount, 2)} CPOT</span>
                 </div>
             </div>
             
@@ -161,10 +176,11 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             <Separator />
             
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                <div className="flex items-center"><Calendar className="w-4 h-4 mr-2 text-muted-foreground"/>Cliff ends:</div>
-                <div className="text-right font-mono">{new Date(Number(schedule.start + schedule.cliff) * 1000).toLocaleString()}</div>
-                <div className="flex items-center"><HandCoins className="w-4 h-4 mr-2 text-muted-foreground"/>Releasable:</div>
-                <div className="text-right font-mono text-primary font-bold">{formatTokenAmount(releasableBigInt, 6)} CPOT</div>
+                <div className="flex items-center col-span-2 text-muted-foreground"><Calendar className="w-4 h-4 mr-2"/>Cliff ends: {new Date(Number(schedule.start + schedule.cliff) * 1000).toLocaleString()}</div>
+                {renderStat(PiggyBank, "Total", formatTokenAmount(vestingProgress?.totalAmount, 2), "CPOT", isLoadingProgress)}
+                {renderStat(HandCoins, "Released", formatTokenAmount(vestingProgress?.releasedAmount, 2), "CPOT", isLoadingProgress)}
+                {renderStat(KeyRound, "Releasable", formatTokenAmount(vestingProgress?.releasableAmount, 4), "CPOT", isLoadingProgress)}
+                {renderStat(Lock, "Locked", formatTokenAmount(vestingProgress?.lockedAmount, 2), "CPOT", isLoadingProgress)}
             </div>
         </CardContent>
         <CardFooter className="bg-muted/50 p-4 flex flex-col sm:flex-row items-center gap-2">
@@ -200,9 +216,14 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
                         </Button>
                     </span>
                 </TooltipTrigger>
-                {!canRelease && releasableBigInt === 0n && (
+                {!canRelease && releasableBigInt === 0n && !isLoadingProgress && (
                   <TooltipContent>
                     <p>No tokens are currently releasable for this schedule.</p>
+                  </TooltipContent>
+                )}
+                 {!canRelease && (isPending || isConfirming) && (
+                  <TooltipContent>
+                    <p>A release transaction is already in progress.</p>
                   </TooltipContent>
                 )}
               </Tooltip>

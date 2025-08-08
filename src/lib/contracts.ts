@@ -120,87 +120,6 @@ export const vestingContractAbi = [
         "type": "address"
       }
     ],
-    "name": "getBeneficiaryVestingSchedules",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bool",
-            "name": "initialized",
-            "type": "bool"
-          },
-          {
-            "internalType": "address",
-            "name": "beneficiary",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "cliff",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "start",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "duration",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "slicePeriodSeconds",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "revocable",
-            "type": "bool"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountTotal",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "released",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "revoked",
-            "type": "bool"
-          },
-          {
-            "internalType": "enum IVesting.AllocationCategory",
-            "name": "category",
-            "type": "uint8"
-          },
-          {
-            "internalType": "enum IVesting.VestingType",
-            "name": "vestingType",
-            "type": "uint8"
-          }
-        ],
-        "internalType": "struct IVesting.VestingSchedule[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "beneficiary",
-        "type": "address"
-      }
-    ],
     "name": "getBeneficiaryVestingSummary",
     "outputs": [
       {
@@ -298,6 +217,47 @@ export const vestingContractAbi = [
         "name": "",
         "type": "uint256"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+        {
+            "internalType": "bytes32",
+            "name": "scheduleId",
+            "type": "bytes32"
+        }
+    ],
+    "name": "getVestingProgress",
+    "outputs": [
+        {
+            "components": [
+                {
+                    "internalType": "uint256",
+                    "name": "totalAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "releasedAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "releasableAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "lockedAmount",
+                    "type": "uint256"
+                }
+            ],
+            "internalType": "struct IVesting.VestingProgress",
+            "name": "",
+            "type": "tuple"
+        }
     ],
     "stateMutability": "view",
     "type": "function"

@@ -40,5 +40,12 @@ export interface VestingSchedule {
 }
 
 export interface VestingScheduleWithId extends VestingSchedule {
-  id: string; 
+  id: `0x${string}`; 
+}
+
+export interface VestingProgress {
+  totalAmount: bigint;
+  releasedAmount: bigint;
+  releasableAmount: bigint;
+  lockedAmount: bigint;
 }
