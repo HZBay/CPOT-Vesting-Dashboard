@@ -13,7 +13,7 @@ export default function UserDashboard() {
   const { address, isConnected } = useAccount();
 
   // 1. Get all schedules for the beneficiary
-  const { data: schedulesResult, isLoading: isLoadingSchedules } = useReadContract({
+  const { data: schedules, isLoading: isLoadingSchedules } = useReadContract({
     address: contractConfig.testnet.vestingAddress,
     abi: vestingContractAbi,
     functionName: 'getBeneficiaryVestingSchedules',
@@ -34,13 +34,7 @@ export default function UserDashboard() {
     }
   });
   
-  // 3. Process the schedules data
-  const schedules: VestingScheduleWithId[] = (schedulesResult ?? [])
-    .map((result: any) => ({
-      id: result.id,
-      ...result.schedule
-    }))
-    .filter((s): s is VestingScheduleWithId => s !== null);
+  const schedulesTyped = (schedules ?? []) as VestingScheduleWithId[];
 
   const isLoading = isLoadingSchedules || isLoadingSummary;
 
@@ -76,7 +70,7 @@ export default function UserDashboard() {
     )
   }
   
-  if (schedules.length === 0 && !isLoading) {
+  if (schedulesTyped.length === 0 && !isLoading) {
     return (
       <>
         <PersonalOverview summary={summaryResult} />
@@ -91,7 +85,7 @@ export default function UserDashboard() {
     <div>
       <PersonalOverview summary={summaryResult} />
       <div className="mt-8">
-        <VestingPlans schedules={schedules} />
+        <VestingPlans schedules={schedulesTyped} />
       </div>
     </div>
   );

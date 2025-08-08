@@ -39,9 +39,8 @@ export interface VestingSchedule {
   vestingType: VestingType;
 }
 
-export interface VestingScheduleWithId {
-  id: `0x${string}`; 
-  schedule: VestingSchedule;
+export interface VestingScheduleWithId extends VestingSchedule {
+  id: `0x${string}`;
 }
 
 export interface VestingProgress {
