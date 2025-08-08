@@ -1,0 +1,93 @@
+{
+  "Metadata": {
+    "title": "HZ Vesting Dashboard",
+    "description": "Manage your HZ token vesting schedules."
+  },
+  "Header": {
+    "title": "HZ Vesting Dashboard"
+  },
+  "GlobalStats": {
+    "title": "Overall Stats",
+    "totalVested": "Total Vested",
+    "totalReleased": "Total Released",
+    "releaseProgress": "Release Progress"
+  },
+  "UserDashboard": {
+    "connectWalletTitle": "Connect Your Wallet",
+    "connectWalletMessage": "Please connect your wallet to view your personal vesting schedules and manage your tokens.",
+    "errorLoading": "Error Loading Data",
+    "errorFetching": "Could not fetch vesting data."
+  },
+  "PersonalOverview": {
+    "title": "Your Dashboard",
+    "totalAllocated": "Total Allocated",
+    "alreadyReleased": "Already Released",
+    "currentlyReleasable": "Currently Releasable",
+    "stillLocked": "Still Locked",
+    "vestingSchedules": "Vesting Schedules"
+  },
+  "VestingPlans": {
+    "title": "Your Vesting Plans",
+    "all": "All",
+    "noSchedules": "No Vesting Schedules Found",
+    "noSchedulesMessage": "There are no vesting schedules associated with this wallet address.",
+    "noSchedulesInCategory": "No Schedules in this Category",
+    "noSchedulesInCategoryMessage": "You do not have any vesting schedules in the {categoryName} category."
+  },
+  "ScheduleCard": {
+    "planDetails": "Plan Details",
+    "type": "Type",
+    "status": {
+      "revoked": "Revoked",
+      "completed": "Completed",
+      "active": "Active"
+    },
+    "releaseProgress": "Release Progress",
+    "timeElapsed": "Time Elapsed",
+    "remaining": "remaining",
+    "cliffEnds": "Cliff ends",
+    "total": "Total",
+    "released": "Released",
+    "releasable": "Releasable",
+    "locked": "Locked",
+    "max": "Max",
+    "releasing": "Releasing...",
+    "releaseTokens": "Release Tokens",
+    "tooltips": {
+      "noTokens": "No tokens are currently releasable for this schedule.",
+      "inProgress": "A release transaction is already in progress."
+    },
+    "toasts": {
+      "txSent": "Transaction Sent",
+      "txSentDesc": "Your release transaction has been broadcasted.",
+      "txFailed": "Transaction Failed",
+      "txRejected": "Transaction rejected by user.",
+      "txConfirmed": "Transaction Confirmed",
+      "txConfirmedDesc": "Your tokens have been released successfully.",
+      "invalidAmount": "Invalid Amount",
+      "invalidAmountDesc": "Please enter a positive amount to release.",
+      "exceedsReleasable": "Amount Exceeds Releasable",
+      "exceedsReleasableDesc": "You cannot release more tokens than currently available."
+    }
+  },
+  "WalletConnect": {
+    "connectWallet": "Connect Wallet",
+    "wrongNetwork": "Wrong network"
+  },
+  "AllocationCategory": {
+    "MINING": "Mining Rewards",
+    "ECOSYSTEM": "Ecosystem & Ops",
+    "TEAM": "Team & Advisors",
+    "CORNERSTONE": "Cornerstone"
+  },
+  "VestingType": {
+    "LINEAR": "Linear",
+    "MILESTONE": "Milestone",
+    "CLIFF_LINEAR": "Cliff + Linear"
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "zh": "中文"
+  }
+}

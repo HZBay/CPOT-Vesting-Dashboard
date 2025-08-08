@@ -3,8 +3,10 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from '@/components/ui/button';
 import { Wallet } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function WalletConnect() {
+  const t = useTranslations('WalletConnect');
   return (
     <ConnectButton.Custom>
       {({
@@ -24,24 +26,11 @@ export default function WalletConnect() {
           (!authenticationStatus ||
             authenticationStatus === 'authenticated');
 
-        if (!ready) {
-          return (
-            <div
-              aria-hidden="true"
-              style={{
-                opacity: 0,
-                pointerEvents: 'none',
-                userSelect: 'none',
-              }}
-            />
-          );
-        }
-
         if (!connected) {
           return (
             <Button onClick={openConnectModal} type="button">
               <Wallet className="mr-2 h-4 w-4" />
-              Connect Wallet
+              {t('connectWallet')}
             </Button>
           );
         }
@@ -49,7 +38,7 @@ export default function WalletConnect() {
         if (chain.unsupported) {
           return (
             <Button onClick={openChainModal} type="button" variant="destructive">
-              Wrong network
+              {t('wrongNetwork')}
             </Button>
           );
         }

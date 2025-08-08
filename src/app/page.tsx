@@ -1,17 +1,8 @@
-import Header from '@/components/dashboard/header';
-import GlobalStats from '@/components/dashboard/global-stats';
-import UserDashboard from '@/components/dashboard/user-dashboard';
+// This file is now redundant, as the root page is handled by [locale]/page.tsx.
+// To avoid build errors or confusion, we can redirect to the default locale.
+// In a real-world scenario, you might have a language detection page here.
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <GlobalStats />
-        <div className="mt-8">
-          <UserDashboard />
-        </div>
-      </main>
-    </div>
-  );
+export default function RootPage() {
+  redirect('/en');
 }

@@ -5,6 +5,7 @@ import { AllocationCategory, AllocationCategoryMapping } from '@/lib/types';
 import ScheduleCard from './schedule-card';
 import type { VestingScheduleWithId } from '@/lib/types';
 import { Package, FileText } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const categories = [
     AllocationCategory.MINING,
@@ -14,6 +15,13 @@ const categories = [
 ];
 
 export default function VestingPlans({ schedules }: { schedules: VestingScheduleWithId[] }) {
+  const t = useTranslations('VestingPlans');
+  const tCat = useTranslations('AllocationCategory');
+
+  const getCategoryName = (category: AllocationCategory) => {
+    const key = AllocationCategoryMapping[category];
+    return tCat(key as any);
+  };
 
   const filteredSchedules = (category: AllocationCategory) => {
     return schedules.filter(s => s.schedule.category === category);
@@ -23,9 +31,9 @@ export default function VestingPlans({ schedules }: { schedules: VestingSchedule
     return (
         <div className="text-center p-10 bg-card rounded-lg border border-dashed">
             <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium">No Vesting Schedules Found</h3>
+            <h3 className="mt-4 text-lg font-medium">{t('noSchedules')}</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-                There are no vesting schedules associated with this wallet address.
+                {t('noSchedulesMessage')}
             </p>
         </div>
     )
@@ -33,12 +41,12 @@ export default function VestingPlans({ schedules }: { schedules: VestingSchedule
 
   return (
     <div>
-      <h2 className="text-2xl font-bold tracking-tight mb-4">Your Vesting Plans</h2>
+      <h2 className="text-2xl font-bold tracking-tight mb-4">{t('title')}</h2>
       <Tabs defaultValue="all">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="all">{t('all')}</TabsTrigger>
           {categories.map(cat => (
-            <TabsTrigger key={cat} value={cat.toString()}>{AllocationCategoryMapping[cat]}</TabsTrigger>
+            <TabsTrigger key={cat} value={cat.toString()}>{getCategoryName(cat)}</TabsTrigger>
           ))}
         </TabsList>
         <TabsContent value="all" className="mt-4">
@@ -55,9 +63,9 @@ export default function VestingPlans({ schedules }: { schedules: VestingSchedule
              ) : (
                 <div className="text-center p-10 bg-card rounded-lg border border-dashed">
                     <Package className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <h3 className="mt-4 text-lg font-medium">No Schedules in this Category</h3>
+                    <h3 className="mt-4 text-lg font-medium">{t('noSchedulesInCategory')}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        You do not have any vesting schedules in the {AllocationCategoryMapping[cat]} category.
+                        {t('noSchedulesInCategoryMessage', { categoryName: getCategoryName(cat) })}
                     </p>
                 </div>
              )}

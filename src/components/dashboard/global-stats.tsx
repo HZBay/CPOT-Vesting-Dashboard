@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatTokenAmount } from '@/lib/utils';
 import { Landmark, Wallet, PieChart } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslations } from 'next-intl';
 
 const StatCard = ({ title, value, unit, icon: Icon, isLoading }: { title: string; value: string; unit?: string, icon: React.ElementType, isLoading: boolean }) => (
   <Card>
@@ -27,6 +28,8 @@ const StatCard = ({ title, value, unit, icon: Icon, isLoading }: { title: string
 );
 
 export default function GlobalStats() {
+  const t = useTranslations('GlobalStats');
+
   const { data, isLoading } = useReadContracts({
     contracts: [
       {
@@ -51,11 +54,11 @@ export default function GlobalStats() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold tracking-tight mb-4">Overall Stats</h2>
+      <h2 className="text-2xl font-bold tracking-tight mb-4">{t('title')}</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard title="Total Vested" value={formatTokenAmount(total, 2)} unit="CPOT" icon={Landmark} isLoading={isLoading} />
-        <StatCard title="Total Released" value={formatTokenAmount(released, 2)} unit="CPOT" icon={Wallet} isLoading={isLoading} />
-        <StatCard title="Release Progress" value={`${progress.toFixed(2)}%`} icon={PieChart} isLoading={isLoading} />
+        <StatCard title={t('totalVested')} value={formatTokenAmount(total, 2)} unit="CPOT" icon={Landmark} isLoading={isLoading} />
+        <StatCard title={t('totalReleased')} value={formatTokenAmount(released, 2)} unit="CPOT" icon={Wallet} isLoading={isLoading} />
+        <StatCard title={t('releaseProgress')} value={`${progress.toFixed(2)}%`} icon={PieChart} isLoading={isLoading} />
       </div>
     </div>
   );

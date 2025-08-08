@@ -6,10 +6,10 @@ export enum AllocationCategory {
 }
 
 export const AllocationCategoryMapping: { [key in AllocationCategory]: string } = {
-  [AllocationCategory.MINING]: "Mining Rewards",
-  [AllocationCategory.ECOSYSTEM]: "Ecosystem & Ops",
-  [AllocationCategory.TEAM]: "Team & Advisors",
-  [AllocationCategory.CORNERSTONE]: "Cornerstone",
+  [AllocationCategory.MINING]: "MINING",
+  [AllocationCategory.ECOSYSTEM]: "ECOSYSTEM",
+  [AllocationCategory.TEAM]: "TEAM",
+  [AllocationCategory.CORNERSTONE]: "CORNERSTONE",
 };
 
 export enum VestingType {
@@ -19,9 +19,9 @@ export enum VestingType {
 }
 
 export const VestingTypeMapping: { [key in VestingType]: string } = {
-  [VestingType.LINEAR]: "Linear",
-  [VestingType.MILESTONE]: "Milestone",
-  [VestingType.CLIFF_LINEAR]: "Cliff + Linear",
+  [VestingType.LINEAR]: "LINEAR",
+  [VestingType.MILESTONE]: "MILESTONE",
+  [VestingType.CLIFF_LINEAR]: "CLIFF_LINEAR",
 };
 
 export interface VestingSchedule {

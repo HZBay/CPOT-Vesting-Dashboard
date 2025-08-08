@@ -1,0 +1,93 @@
+{
+  "Metadata": {
+    "title": "HZ 归属仪表盘",
+    "description": "管理您的 HZ 代币归属计划。"
+  },
+  "Header": {
+    "title": "HZ 归属仪表盘"
+  },
+  "GlobalStats": {
+    "title": "总体统计",
+    "totalVested": "总归属",
+    "totalReleased": "总已释放",
+    "releaseProgress": "释放进度"
+  },
+  "UserDashboard": {
+    "connectWalletTitle": "连接您的钱包",
+    "connectWalletMessage": "请连接您的钱包以查看您的个人归属计划并管理您的代币。",
+    "errorLoading": "加载数据时出错",
+    "errorFetching": "无法获取归属数据。"
+  },
+  "PersonalOverview": {
+    "title": "您的仪表盘",
+    "totalAllocated": "总分配",
+    "alreadyReleased": "已释放",
+    "currentlyReleasable": "当前可释放",
+    "stillLocked": "仍锁定",
+    "vestingSchedules": "归属计划"
+  },
+  "VestingPlans": {
+    "title": "您的归属计划",
+    "all": "全部",
+    "noSchedules": "未找到归属计划",
+    "noSchedulesMessage": "此钱包地址没有任何关联的归属计划。",
+    "noSchedulesInCategory": "此类别中无计划",
+    "noSchedulesInCategoryMessage": "您在 {categoryName} 类别中没有任何归属计划。"
+  },
+  "ScheduleCard": {
+    "planDetails": "计划详情",
+    "type": "类型",
+    "status": {
+      "revoked": "已撤销",
+      "completed": "已完成",
+      "active": "进行中"
+    },
+    "releaseProgress": "释放进度",
+    "timeElapsed": "时间流逝",
+    "remaining": "剩余",
+    "cliffEnds": "悬崖期结束",
+    "total": "总量",
+    "released": "已释放",
+    "releasable": "可释放",
+    "locked": "锁定中",
+    "max": "最大值",
+    "releasing": "释放中...",
+    "releaseTokens": "释放代币",
+    "tooltips": {
+      "noTokens": "此计划当前无可释放的代币。",
+      "inProgress": "一个释放交易已在进行中。"
+    },
+    "toasts": {
+      "txSent": "交易已发送",
+      "txSentDesc": "您的释放交易已广播。",
+      "txFailed": "交易失败",
+      "txRejected": "用户拒绝了交易。",
+      "txConfirmed": "交易已确认",
+      "txConfirmedDesc": "您的代币已成功释放。",
+      "invalidAmount": "无效金额",
+      "invalidAmountDesc": "请输入一个正数金额进行释放。",
+      "exceedsReleasable": "金额超出可释放数量",
+      "exceedsReleasableDesc": "您不能释放超过当前可用数量的代币。"
+    }
+  },
+  "WalletConnect": {
+    "connectWallet": "连接钱包",
+    "wrongNetwork": "网络错误"
+  },
+  "AllocationCategory": {
+    "MINING": "挖矿奖励",
+    "ECOSYSTEM": "生态与运营",
+    "TEAM": "团队与顾问",
+    "CORNERSTONE": "基石"
+  },
+  "VestingType": {
+    "LINEAR": "线性释放",
+    "MILESTONE": "里程碑释放",
+    "CLIFF_LINEAR": "悬崖+线性释放"
+  },
+  "LanguageSwitcher": {
+    "label": "语言",
+    "en": "English",
+    "zh": "中文"
+  }
+}

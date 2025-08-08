@@ -9,9 +9,11 @@ import { contractConfig, vestingContractAbi } from '@/lib/contracts';
 import type { VestingSchedule, VestingScheduleWithId } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function UserDashboard() {
   const { address, isConnected } = useAccount();
+  const t = useTranslations('UserDashboard');
 
   // 1. Get all schedule contents for the beneficiary
   const { data: schedulesResult, isLoading: isLoadingSchedules, error: schedulesError } = useReadContract({
@@ -76,8 +78,8 @@ export default function UserDashboard() {
       <Card className="mt-6">
         <CardContent className="flex flex-col items-center justify-center p-12 text-center">
           <Wallet className="w-12 h-12 mb-4 text-muted-foreground" />
-          <h3 className="text-xl font-semibold">Connect Your Wallet</h3>
-          <p className="text-muted-foreground mt-2">Please connect your wallet to view your personal vesting schedules and manage your tokens.</p>
+          <h3 className="text-xl font-semibold">{t('connectWalletTitle')}</h3>
+          <p className="text-muted-foreground mt-2">{t('connectWalletMessage')}</p>
         </CardContent>
       </Card>
     );
@@ -96,8 +98,8 @@ export default function UserDashboard() {
     return (
         <Card className="mt-6 border-destructive">
             <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-                <h3 className="text-xl font-semibold text-destructive">Error Loading Data</h3>
-                <p className="text-muted-foreground mt-2">Could not fetch vesting data. {error.message}</p>
+                <h3 className="text-xl font-semibold text-destructive">{t('errorLoading')}</h3>
+                <p className="text-muted-foreground mt-2">{t('errorFetching')} {error.message}</p>
             </CardContent>
         </Card>
     )
