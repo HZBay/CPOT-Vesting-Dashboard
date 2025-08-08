@@ -51,8 +51,8 @@ export default function GlobalStats() {
     <div>
       <h2 className="text-2xl font-bold tracking-tight mb-4">Overall Stats</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard title="Total Vested" value={`${formatTokenAmount(total, 2)} HZ`} icon={Landmark} isLoading={isLoading} />
-        <StatCard title="Total Released" value={`${formatTokenAmount(released, 2)} HZ`} icon={Wallet} isLoading={isLoading} />
+        <StatCard title="Total Vested" value={`${formatTokenAmount(total, 2)} CPOT`} icon={Landmark} isLoading={isLoading} />
+        <StatCard title="Total Released" value={`${formatTokenAmount(released, 2)} CPOT`} icon={Wallet} isLoading={isLoading} />
         <StatCard title="Release Progress" value={`${progress.toFixed(2)}%`} icon={PieChart} isLoading={isLoading} />
       </div>
     </div>

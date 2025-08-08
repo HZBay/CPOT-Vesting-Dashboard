@@ -49,10 +49,10 @@ export default function PersonalOverview({ summary }: { summary: BeneficiarySumm
             </TooltipProvider>
         </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <StatCard title="Total Allocated" value={`${formatTokenAmount(summary?.totalAmount, 2)} HZ`} icon={PiggyBank} />
-        <StatCard title="Already Released" value={`${formatTokenAmount(summary?.releasedAmount, 2)} HZ`} icon={HandCoins} />
-        <StatCard title="Currently Releasable" value={`${formatTokenAmount(summary?.releasableAmount, 2)} HZ`} icon={KeyRound} />
-        <StatCard title="Still Locked" value={`${formatTokenAmount(summary?.lockedAmount, 2)} HZ`} icon={Lock} />
+        <StatCard title="Total Allocated" value={`${formatTokenAmount(summary?.totalAmount, 2)} CPOT`} icon={PiggyBank} />
+        <StatCard title="Already Released" value={`${formatTokenAmount(summary?.releasedAmount, 2)} CPOT`} icon={HandCoins} />
+        <StatCard title="Currently Releasable" value={`${formatTokenAmount(summary?.releasableAmount, 2)} CPOT`} icon={KeyRound} />
+        <StatCard title="Still Locked" value={`${formatTokenAmount(summary?.lockedAmount, 2)} CPOT`} icon={Lock} />
         <StatCard title="Vesting Schedules" value={summary?.scheduleCount?.toString() ?? '0'} icon={List} />
       </div>
     </div>

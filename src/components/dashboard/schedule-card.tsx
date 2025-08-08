@@ -135,7 +135,7 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
             <div className="text-sm">
                 <div className="flex justify-between">
                     <span>Vested</span>
-                    <span>{formatTokenAmount(schedule.released)} / {formatTokenAmount(schedule.amountTotal)} HZ</span>
+                    <span>{formatTokenAmount(schedule.released)} / {formatTokenAmount(schedule.amountTotal)} CPOT</span>
                 </div>
                 <Progress value={releaseProgress} className="mt-1 h-2" />
                 <div className="flex justify-between mt-1 text-xs text-muted-foreground">
@@ -164,7 +164,7 @@ export default function ScheduleCard({ schedule }: { schedule: VestingScheduleWi
                 <div className="flex items-center"><Calendar className="w-4 h-4 mr-2 text-muted-foreground"/>Cliff ends:</div>
                 <div className="text-right font-mono">{new Date(Number(schedule.start + schedule.cliff) * 1000).toLocaleString()}</div>
                 <div className="flex items-center"><HandCoins className="w-4 h-4 mr-2 text-muted-foreground"/>Releasable:</div>
-                <div className="text-right font-mono text-primary font-bold">{formatTokenAmount(releasableBigInt, 6)} HZ</div>
+                <div className="text-right font-mono text-primary font-bold">{formatTokenAmount(releasableBigInt, 6)} CPOT</div>
             </div>
         </CardContent>
         <CardFooter className="bg-muted/50 p-4 flex flex-col sm:flex-row items-center gap-2">

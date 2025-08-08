@@ -5,8 +5,8 @@ import { Web3Provider } from '@/components/providers/web3-provider';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'HZ Vesting Dashboard',
-  description: 'Manage your HZ token vesting schedules.',
+  title: 'CPOT Vesting Dashboard',
+  description: 'Manage your CPOT token vesting schedules.',
 };
 
 export default function RootLayout({
