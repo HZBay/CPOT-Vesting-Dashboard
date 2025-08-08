@@ -1,3 +1,4 @@
+
 'use client';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -45,38 +46,6 @@ export default function WalletConnect() {
 
         return (
           <div className="flex gap-2 items-center">
-            <Button
-              onClick={openChainModal}
-              type="button"
-              variant="outline"
-              className="h-9"
-            >
-              {chain.hasIcon && (
-                <div
-                  style={{
-                    background: chain.iconBackground,
-                    width: 16,
-                    height: 16,
-                    borderRadius: 999,
-                    overflow: 'hidden',
-                    marginRight: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {chain.iconUrl && (
-                    <img
-                      alt={chain.name ?? 'Chain icon'}
-                      src={chain.iconUrl}
-                      style={{ width: 16, height: 16 }}
-                    />
-                  )}
-                </div>
-              )}
-              <span className="hidden sm:inline">{chain.name}</span>
-            </Button>
-
             <Button onClick={openAccountModal} type="button" className="h-9">
               {account.displayName}
             </Button>
