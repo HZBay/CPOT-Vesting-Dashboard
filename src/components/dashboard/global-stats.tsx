@@ -7,7 +7,7 @@ import { formatTokenAmount } from '@/lib/utils';
 import { Landmark, Wallet, PieChart } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const StatCard = ({ title, value, icon: Icon, isLoading }: { title: string; value: string; icon: React.ElementType, isLoading: boolean }) => (
+const StatCard = ({ title, value, unit, icon: Icon, isLoading }: { title: string; value: string; unit?: string, icon: React.ElementType, isLoading: boolean }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -17,7 +17,10 @@ const StatCard = ({ title, value, icon: Icon, isLoading }: { title: string; valu
         {isLoading ? (
             <Skeleton className="h-8 w-3/4" />
         ) : (
-            <div className="text-2xl font-bold">{value}</div>
+          <div className="text-2xl font-bold">
+            <span className="break-all">{value}</span>
+            {unit && <span className="text-base font-medium ml-1">{unit}</span>}
+          </div>
         )}
     </CardContent>
   </Card>
@@ -43,7 +46,6 @@ export default function GlobalStats() {
 
   const total = totalAmount?.result ?? 0n;
   const released = releasedAmount?.result ?? 0n;
-  const locked = total - released;
   
   const progress = total > 0n ? Number((released * 10000n) / total) / 100 : 0;
 
@@ -51,8 +53,8 @@ export default function GlobalStats() {
     <div>
       <h2 className="text-2xl font-bold tracking-tight mb-4">Overall Stats</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard title="Total Vested" value={`${formatTokenAmount(total, 2)} CPOT`} icon={Landmark} isLoading={isLoading} />
-        <StatCard title="Total Released" value={`${formatTokenAmount(released, 2)} CPOT`} icon={Wallet} isLoading={isLoading} />
+        <StatCard title="Total Vested" value={formatTokenAmount(total, 2)} unit="CPOT" icon={Landmark} isLoading={isLoading} />
+        <StatCard title="Total Released" value={formatTokenAmount(released, 2)} unit="CPOT" icon={Wallet} isLoading={isLoading} />
         <StatCard title="Release Progress" value={`${progress.toFixed(2)}%`} icon={PieChart} isLoading={isLoading} />
       </div>
     </div>
